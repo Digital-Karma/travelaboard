@@ -5,6 +5,7 @@
 
 #map{
     height: 800px;
+    margin-bottom: 80px;
 }
 
 .header_focus__pays h1{
@@ -15,13 +16,67 @@
     padding-top: 80px;
 }
 
+.card{
+    border-radius: 20px;
+}
+
+.cadre-title{
+    display: flex;
+    justify-content: space-between;
+}
+
+.divider{
+    border-top: 3px black solid;
+    width: 80px;
+    margin: auto;
+}
+
+.card-header{
+    border: none;
+    background-color: transparent;
+}
+
 .header_focus__pays .introduction{
-    padding-top: 40px;
+    padding-left: 40px;
+    border-bottom: 1px black solid;
+    border-left: 1px black solid;
+    padding-top: 80px;
     padding-bottom: 40px;
+    margin-bottom: 40px;
+    margin-top: 40px;
     width: 80%;
     margin-left: 10%;
 }
 
 .list_focus__ville div{
     text-align: center;
+}
+
+.img-focus{
+    margin-top: 80px;
+    margin-bottom: 40px;
+}
+
+.span-more-info{
+    margin-bottom: 80px;
+}
+
+.span-more-info a{
+    color: teal;
+}
+
+.avatar{
+    max-width: 128px;
+    max-height: 128px;
+    border-radius: 50%;
+}
+
+.avatr-medium{
+    max-width: 64px;
+    max-height: 64px;
+}
+
+.avatar-mini{
+    max-width: 24px;
+    max-height: 24px;
 }

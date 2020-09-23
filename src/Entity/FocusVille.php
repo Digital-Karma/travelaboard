@@ -64,6 +64,12 @@ class FocusVille
      * @ORM\OneToOne(targetEntity=MarkerVille::class, mappedBy="focusVille", cascade={"persist", "remove"})
      */
     private $markerVille;
+
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="focusVilles")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
     
       /**
      * Permet d'initialiser le slug
@@ -206,6 +212,18 @@ class FocusVille
         if ($markerVille->getFocusVille() !== $this) {
             $markerVille->setFocusVille($this);
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

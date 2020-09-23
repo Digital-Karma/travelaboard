@@ -47,6 +47,8 @@ class FocusPaysController extends AbstractController
         //Avec ce If on verfifie si le form est soumit et valid avant de le faire persister en BDD
         if($form->isSubmitted() && $form->isValid()){
 
+            $focus_pays->setAuthor($this->getUser());
+
             $manager->persist($focus_pays);
             $manager->flush();
 

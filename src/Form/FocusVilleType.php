@@ -22,7 +22,7 @@ class FocusVilleType extends ApplicationType
             ->add('slug', TextType::class, $this->getConfiguration("Adresse Web", "Tapez l'adresse web (automatique)", [
                 'required' => false
             ]))
-            ->add('imageCover', UrlType::class, $this->getConfiguration("Url de l'image principale", "Donnez l'adresse de votre plus belle Image de votre Logement."))
+            ->add('imageCover', UrlType::class, $this->getConfiguration("Url de l'image principale", "Donnez l'url de l'image pour le focus ville."))
             // ->add('focusPays')
             ->add('markerVille', MarkerVilleType::class)
         ;

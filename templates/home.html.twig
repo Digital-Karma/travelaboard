@@ -7,6 +7,7 @@ Bienvenue sur Travelaboard
 	<div class="container">
 		<div class="jumbotron mt-3">
 			<h1 class="display-3">Bienvenue sur Travelabroad</h1>
+            <div id="app"></div>
 			<p class="lead">Nous mettons en relations des voyageurs afin qu'ils partagent leurs expériences.</p>
 			<hr class="my-4">
 			<p>Vous êtes voyageur ? Et vous souhaitez avoir des suggestions pour votre prochaine aventure? </p>
@@ -109,4 +110,8 @@ Bienvenue sur Travelaboard
             </div>
         </div>
 	</div>
+{% endblock %}
+
+{% block javascripts %}
+{{ encore_entry_script_tags('app') }}
 {% endblock %}

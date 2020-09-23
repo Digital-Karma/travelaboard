@@ -47,6 +47,12 @@ class FocusLieu
      */
     private $markerLieu;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="focusLieus")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -113,6 +119,18 @@ class FocusLieu
         if ($markerLieu->getFocusLieu() !== $this) {
             $markerLieu->setFocusLieu($this);
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }

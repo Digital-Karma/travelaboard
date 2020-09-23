@@ -1,0 +1,19 @@
+   {% set url = path('focus_show_lieu', {'slug': focs.slug }) %}
+				<div class="col-md-4">
+				<div class="card bg-light mb-3">
+                    <div class="card-header text-center">
+                    <p class="h3">Focus Lieu</p>
+                        <small>Pas encore noté</small>
+                    </div>
+                    
+                    <div class="card-body">
+                        <h4 class="card-title">
+                        <a href="{{ url }}">{{ focs.title }}</a>
+                        </h4>
+                        <p class="card-text">
+                            {{ focs.content | raw }}
+                        </p>
+                        <a class="btn btn-secondary" href="{{ url }}">En savoir plus.</a>
+                    </div>
+                </div>
+			</div>

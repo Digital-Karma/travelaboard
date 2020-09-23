@@ -21,6 +21,7 @@
 		<div id="map"></div>
 		<div class="list_focus__ville row">
 			{% for focusLieu in focus.focusLieus %}
+				{% set url = path('focus_show_lieu', {'slug': focusLieu.slug }) %}
 				<div class="col-md-6">
 					<h3>{{focusLieu.title}}</h3>
 					<p>{{focusLieu.content | raw}}</p>
@@ -33,10 +34,34 @@
 					<p>ICI UNE LISTE DE RECOMMANDATION</p>
 					<p>ICI UNE LISTE DE RECOMMANDATION</p>
 				</div>
-			
-				<a href="#">Pour plus d’informations sur cette lieu veuillez consulter FOCUS
+
+				<a href="{{ url }}">Pour plus d’informations sur cette lieu veuillez consulter FOCUS
 					{{focusLieu.title}}</a>
 			{% endfor %}
+		</div>
+		<div class="col">
+			{% set a = focus.author %}
+			<div class="row mb-3 align-items-center">
+				<div class="col-3">
+					<a href="{{ path('user_show', {'slug': a.slug}) }}">
+						<img src="{{a.picture}}" class="avatar avatar-medium" alt="Avatar de {{a.fullName}}">
+					</a>
+				</div>
+				<div class="col">
+					<a href="{{ path('user_show', {'slug': a.slug}) }}">
+						<h3>{{a.fullName}}</h3>
+					</a>
+					<span class="badge badge-primary">{{a.focusPays | length}}
+						focus pays créés</span>
+					<span class="badge badge-primary">{{a.focusVilles | length}}
+						focus villes créés</span>
+					<span class="badge badge-primary">{{a.focusLieus | length}}
+						focus lieus créés</span>
+					<div class="intro-user">
+						<p>{{a.description | raw}}</p>
+					</div>
+				</div>
+			</div>
 		</div>
 	</div>
 

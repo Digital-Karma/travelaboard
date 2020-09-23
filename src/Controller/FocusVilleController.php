@@ -44,6 +44,9 @@ class FocusVilleController extends AbstractController
         //Avec ce If on verfifie si le form est soumit et valid avant de le faire persister en BDD
         if($form->isSubmitted() && $form->isValid()){
 
+            $focus_ville->setAuthor($this->getUser());
+
+
             $manager->persist($focus_ville);
             $manager->flush();
             

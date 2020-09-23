@@ -59,6 +59,12 @@ class FocusPays
      */
     private $markerPays;
 
+    /**
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="focusPays")
+     * @ORM\JoinColumn(nullable=false)
+     */
+    private $author;
+
       /**
      * Permet d'initialiser le slug
      *
@@ -177,6 +183,18 @@ class FocusPays
         if ($markerPays->getFocusPays() !== $this) {
             $markerPays->setFocusPays($this);
         }
+
+        return $this;
+    }
+
+    public function getAuthor(): ?User
+    {
+        return $this->author;
+    }
+
+    public function setAuthor(?User $author): self
+    {
+        $this->author = $author;
 
         return $this;
     }
