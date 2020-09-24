@@ -16,6 +16,10 @@
 				{{ focs.introduction }}
 			</p>
 			<a class="btn btn-secondary" href="{{ url }}">En savoir plus.</a>
+
+			{% if app.user and app.user == focs.author %}
+				<a href="{{ path('pays_edit', {'slug': focs.slug})}}" class="btn btn-primary">Modifier Focus</a>
+			{% endif %}
 		</div>
 	</div>
 </div>

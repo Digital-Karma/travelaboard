@@ -3,6 +3,7 @@
 namespace App\DataFixtures;
 
 use Faker\Factory;
+use App\Entity\Role;
 use App\Entity\User;
 use App\Entity\FocusLieu;
 use App\Entity\FocusPays;
@@ -25,6 +26,23 @@ class AppFixtures extends Fixture
     {
         $faker = Factory::create('fr-FR');
 
+        //Je gere les Roles
+        $adminRole = new Role();
+        $adminRole->setTitle('ROLE_ADMIN');
+        $manager->persist($adminRole);
+
+        $adminUser = new User();
+        $adminUser->setFirstName('Jessy')
+                  ->setLastName('Muller')
+                  ->setEmail('jessy@admin.fr')
+                  ->setHash($this->encoder->encodePassword($adminUser, 'password'))
+                  ->setPicture('https://avatars.io/twitter/GameRagnar') 
+                  ->setIntroduction($faker->sentence())
+                  ->setDescription('<p>' . join('</p><p>', $faker->paragraphs(3)) . '</p>') 
+                  ->addUserRole($adminRole);
+
+        $manager->persist($adminUser);
+             
         //Je gere les utilisateur
 
         $users = [];

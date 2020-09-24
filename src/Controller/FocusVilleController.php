@@ -8,6 +8,8 @@ use App\Repository\FocusVilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FocusVilleController extends AbstractController
@@ -28,6 +30,7 @@ class FocusVilleController extends AbstractController
      * Permet de créer un Focus Ville
      *
      * @Route("/ads/new_ville", name="ads_ville")
+     * @IsGranted("ROLE_USER")
      * 
     * @return Response
      */
@@ -65,6 +68,7 @@ class FocusVilleController extends AbstractController
      * Permet d'éditer un focus ville
      * 
      * @Route("/focus_ville/{slug}/edit", name="ville_edit")
+     * @Security("is_granted('ROLE_USER') and user === focus_ville.getAuthor() or is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas modifier un focus ville que vous n'avez pas créer")
      * 
      * @return Response
      */
@@ -101,5 +105,27 @@ class FocusVilleController extends AbstractController
         return $this->render('focus_ville/show.html.twig', [
             'focus' => $focus,
         ]);
+    }
+
+    /**
+     * Permet de supprimer un focus
+     * 
+     * @Route("/focus_ville/{slug}/delete", name="ville_delete")
+     * @Security("is_granted('ROLE_USER') and user === focus.getAuthor()", message="Vous ne pouvez supprimer un focus que vous n'avez pas créer.")
+     *
+     * @param FocusVille $focus
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    public function delete(FocusVille $focus, EntityManagerInterface $manager){
+        $manager->remove($focus);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            "Le focus <strong>{$focus->getTitle()}</strong> a bien été supprimé !"
+        );
+
+        return $this->redirectToRoute("focus_ville");
     }
 }

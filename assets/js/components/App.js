@@ -3,7 +3,7 @@ import React from 'react';
 class App extends React.Component {
     render() {
         return(
-            <h1>Composant React</h1>
+            <h1>Composant Wesh</h1>
         )
     }
 }

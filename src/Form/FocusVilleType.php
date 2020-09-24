@@ -2,10 +2,13 @@
 
 namespace App\Form;
 
+use App\Entity\FocusPays;
 use App\Entity\FocusVille;
+use App\Form\FocusPaysType;
 use App\Form\ApplicationType;
 use App\Form\MarkerVilleType;
 use Symfony\Component\Form\FormBuilderInterface;
+use Symfony\Bridge\Doctrine\Form\Type\EntityType;
 use Symfony\Component\OptionsResolver\OptionsResolver;
 use Symfony\Component\Form\Extension\Core\Type\UrlType;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
@@ -23,7 +26,11 @@ class FocusVilleType extends ApplicationType
                 'required' => false
             ]))
             ->add('imageCover', UrlType::class, $this->getConfiguration("Url de l'image principale", "Donnez l'url de l'image pour le focus ville."))
-            // ->add('focusPays')
+            ->add('focusPays', EntityType::class, [
+                'class' => FocusPays::class,
+                'choice_label' => 'title',
+                'placeholder' => 'Cette ville ce trouve dans quel Pays'
+            ])
             ->add('markerVille', MarkerVilleType::class)
         ;
     }

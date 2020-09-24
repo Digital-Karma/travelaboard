@@ -9,6 +9,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FocusLieuController extends AbstractController
@@ -29,6 +31,7 @@ class FocusLieuController extends AbstractController
      * Permet de créer un Focus Lieu
      *
      * @Route("/ads/new_lieu", name="ads_lieu")
+     * @IsGranted("ROLE_USER")
      * 
     * @return Response
      */
@@ -66,6 +69,7 @@ class FocusLieuController extends AbstractController
      * Permet d'éditer un focus lieu
      * 
      * @Route("/focus_lieu/{slug}/edit", name="lieu_edit")
+     * @Security("is_granted('ROLE_USER') and user === focus_lieu.getAuthor() or is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas modifier un focus lieu que vous n'avez pas créer")
      * 
      * @return Response
      */
@@ -90,7 +94,6 @@ class FocusLieuController extends AbstractController
         ]);
     }
 
-
     /**
      * Permet d'afficher une seul annonce
      *
@@ -102,5 +105,27 @@ class FocusLieuController extends AbstractController
             return $this->render('focus_lieu/show.html.twig', [
             'focus' => $focus,
         ]);
+    }
+    
+    /**
+     * Permet de supprimer un focus
+     * 
+     * @Route("/focus_lieu/{slug}/delete", name="lieu_delete")
+     * @Security("is_granted('ROLE_USER') and user === focus.getAuthor()", message="Vous ne pouvez supprimer un focus que vous n'avez pas créer.")
+     *
+     * @param FocusLieu $focus
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    public function delete(FocusLieu $focus, EntityManagerInterface $manager){
+        $manager->remove($focus);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            "Le focus <strong>{$focus->getTitle()}</strong> a bien été supprimé !"
+        );
+
+        return $this->redirectToRoute("focus_lieu");
     }
 }

@@ -10,6 +10,8 @@ use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\Security;
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class FocusPaysController extends AbstractController
@@ -30,6 +32,7 @@ class FocusPaysController extends AbstractController
      * Permet de créer un Focus Pays
      *
      * @Route("/ads/new_pays", name="ads_pays")
+     * @IsGranted("ROLE_USER")
      * 
     * @return Response
      */
@@ -66,6 +69,7 @@ class FocusPaysController extends AbstractController
      * Permet d'éditer une annonce
      * 
      * @Route("/focus_pays/{slug}/edit", name="pays_edit")
+     * @Security("is_granted('ROLE_USER') and user === focus_pays.getAuthor() or is_granted('ROLE_ADMIN')", message="Vous ne pouvez pas modifier un focus pays que vous n'avez pas créer")
      * 
      * @return Response
      */
@@ -101,5 +105,27 @@ class FocusPaysController extends AbstractController
         return $this->render('focus_pays/show.html.twig', [
             'focus' => $focus,
         ]);
+    }
+
+    /**
+     * Permet de supprimer un focus
+     * 
+     * @Route("/focus_pays/{slug}/delete", name="pays_delete")
+     * @Security("is_granted('ROLE_USER') and user === focus.getAuthor()", message="Vous ne pouvez supprimer un focus que vous n'avez pas créer.")
+     *
+     * @param FocusPays $focus
+     * @param EntityManagerInterface $manager
+     * @return Response
+     */
+    public function delete(FocusPays $focus, EntityManagerInterface $manager){
+        $manager->remove($focus);
+        $manager->flush();
+
+        $this->addFlash(
+            'success',
+            "Le focus <strong>{$focus->getTitle()}</strong> a bien été supprimé !"
+        );
+
+        return $this->redirectToRoute("focus_pays");
     }
 }

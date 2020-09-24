@@ -12,6 +12,12 @@
 {% block body %}
 	<div class="container">
 		<div class="header_focus__pays">
+
+			{% if app.user and app.user == focus.author %}
+				<a href="{{ path('pays_edit', {'slug': focus.slug})}}" class="btn btn-primary">Modifier Focus</a>
+				<a href="{{ path('pays_delete', {'slug': focus.slug})}}" class="btn btn-danger" onclick="return confirm(`Êtes vous sur de vouloir supprimer le focus : {{ focus.title }} ?`)">Supprimer Focus</a>
+			{% endif %}
+
 			<div class="cadre-title">
 				<div class="divider"></div>
 				<h1>{{ focus.title }}</h1>
