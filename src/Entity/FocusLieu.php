@@ -2,13 +2,22 @@
 
 namespace App\Entity;
 
-use App\Repository\FocusLieuRepository;
+use App\Entity\User;
+use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
+use App\Repository\FocusLieuRepository;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
 use Symfony\Component\Validator\Constraints as Assert;
+use Symfony\Bridge\Doctrine\Validator\Constraints\UniqueEntity;
 
 
 /**
  * @ORM\Entity(repositoryClass=FocusLieuRepository::class)
+ * @UniqueEntity(
+ *  fields={"title"},
+ *  message="Un Focus Lieu possède déjà ce titre"
+ * )
  */
 class FocusLieu
 {
@@ -52,6 +61,63 @@ class FocusLieu
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="focusLieu", orphanRemoval=true)
+     */
+    private $comments;
+    
+      /**
+     * Permet d'initialiser le slug
+     *
+     * @ORM\PrePersist
+     * @ORM\PreUpdate
+     * 
+     * @return void
+     */
+    public function initializeSlug() {
+        if(empty($this->slug)){
+            $slugify = new Slugify();
+            $this->slug = $slugify->slugify($this->title);
+        }
+    }
+
+    /**
+     * Permet de récuperer le commentaire d'un auteur par rapport à une annonce
+     *
+     * @param User $author
+     * @return Comment | null
+     */
+    public function getCommentFromAuthor(User $author){
+        foreach ($this->comments as $comment) {
+            if($comment->getAuthor() === $author) return $comment;
+        }
+
+        return null;
+    }
+
+    /**
+     * Permet d'obtenir la moyenne globale des note pour cette annonce
+     *
+     * @return float
+     */
+    public function getAvgRatings() {
+        //Calculer la somme des notations
+        // on commence par appeler le tableau comments qui est un array collection, on le transform en tableau avec to array et il est reduit avec array_reduce
+        $sum = array_reduce($this->comments->toArray(), function($total, $comment) {
+            return $total + $comment->getRating();
+        }, 0);
+
+        //Faire la division pour avoir la moyenne
+       if(count($this->comments) > 0) return $sum /count($this->comments);
+       
+       return 0;
+    }
+
+    public function __construct()
+    {
+        $this->comments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -131,6 +197,37 @@ class FocusLieu
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setFocusLieu($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getFocusLieu() === $this) {
+                $comment->setFocusLieu(null);
+            }
+        }
 
         return $this;
     }

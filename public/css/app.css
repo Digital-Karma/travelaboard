@@ -8,6 +8,12 @@
     margin-bottom: 80px;
 }
 
+.header_focus{
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-position: center;
+}
+
 .header_focus__pays h1{
     text-align: center;
 }
@@ -16,8 +22,13 @@
     padding-top: 80px;
 }
 
+.envelop-card{
+    margin-bottom: 40px;
+}
+
 .card{
     border-radius: 20px;
+    overflow: hidden;
 }
 
 .cadre-title{
@@ -25,10 +36,20 @@
     justify-content: space-between;
 }
 
+.introduction p {
+    color: white;
+}
+
 .divider{
     border-top: 3px black solid;
     width: 80px;
     margin: auto;
+}
+
+.divider-border{
+    border-left: 1px red solid;
+    width: 1px;
+    height: 100%;
 }
 
 .card-header{
@@ -38,8 +59,6 @@
 
 .header_focus__pays .introduction{
     padding-left: 40px;
-    border-bottom: 1px black solid;
-    border-left: 1px black solid;
     padding-top: 80px;
     padding-bottom: 40px;
     margin-bottom: 40px;
@@ -48,17 +67,22 @@
     margin-left: 10%;
 }
 
-.list_focus__ville div{
-    text-align: center;
+.list_focus__ville{
+    margin-top: 80px;
+    justify-content: center;
 }
 
 .img-focus{
     margin-top: 80px;
     margin-bottom: 40px;
+    padding: 0;
 }
 
 .span-more-info{
     margin-bottom: 80px;
+    position: absolute;
+    left: 0;
+    background: rgba(250,250,250,0.8);
 }
 
 .span-more-info a{
@@ -71,7 +95,7 @@
     border-radius: 50%;
 }
 
-.avatr-medium{
+.avatar-medium{
     max-width: 64px;
     max-height: 64px;
 }
@@ -79,4 +103,13 @@
 .avatar-mini{
     max-width: 24px;
     max-height: 24px;
+}
+
+.avatar-micro{
+    max-width: 20px;
+    max-height: 20px;
+}
+
+span.rating i {
+    color: gold;
 }

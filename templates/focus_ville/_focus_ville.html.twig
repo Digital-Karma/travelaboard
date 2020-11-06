@@ -3,7 +3,11 @@
 	<div class="card bg-light mb-3">
 		<div class="card-header text-center">
 			<p class="h3">Focus Ville</p>
-			<small>Pas encore noté</small>
+			{% if focs.comments|length > 0 %}
+				{% include "partials/rating.html.twig" with {'rating': focs.AvgRatings} %}
+			{% else %}
+				<small>Pas encore noté</small>
+			{% endif %}
 		</div>
 		<a href="{{ url }}">
 			<img src="{{focs.imageCover}}" alt="Image de l'appartement" style="height:200px; width: 100%; display: block">

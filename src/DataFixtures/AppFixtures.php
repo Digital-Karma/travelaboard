@@ -5,6 +5,7 @@ namespace App\DataFixtures;
 use Faker\Factory;
 use App\Entity\Role;
 use App\Entity\User;
+use App\Entity\Comment;
 use App\Entity\FocusLieu;
 use App\Entity\FocusPays;
 use App\Entity\FocusVille;
@@ -112,7 +113,6 @@ class AppFixtures extends Fixture
                 $title = $faker->sentence();
                 $coverImage = $faker->imageUrl(1000, 350);
                 $intro = $faker->paragraph(2);
-                $slug = $faker->slug;
                 $content =  '<p>' . join('</p><p>', $faker->paragraphs(5)) . '</p>';
 
                 $user = $users[mt_rand(0, count($users) -1)];
@@ -122,7 +122,6 @@ class AppFixtures extends Fixture
                     ->setIntroduction($intro)
                     ->setContent($content)
                     ->setFocusPays($FocusPays)
-                    ->setSlug($slug)
                     ->setAuthor($user);
 
                 //Je gere la creation de Marker Ville
@@ -149,7 +148,6 @@ class AppFixtures extends Fixture
                 $FocusLieu = new FocusLieu();
 
                 $title = $faker->sentence();
-                $slug = $faker->slug;
                 $content =  '<p>' . join('</p><p>', $faker->paragraphs(5)) . '</p>';
 
                 $user = $users[mt_rand(0, count($users) -1)];
@@ -157,7 +155,6 @@ class AppFixtures extends Fixture
                 $FocusLieu->setTitle($title)
                     ->setContent($content)
                     ->setFocusVille($FocusVille)
-                    ->setSlug($slug)
                     ->setAuthor($user);
 
 
@@ -182,6 +179,21 @@ class AppFixtures extends Fixture
 
                 $manager->persist($FocusLieu);
             }
+
+            
+            //Gestion des commentaires pour les Focus 
+            if (mt_rand(1,7)) {
+                $comment = new Comment();
+                $comment->setContent($faker->paragraph())
+                        ->setRating(mt_rand(1, 5))
+                        ->setAuthor($user)
+                        ->setFocusLieu($FocusLieu)
+                        ->setFocusVille($FocusVille)
+                        ->setFocusPays($FocusPays);
+
+                $manager->persist($comment);
+            }
+
         }
 
         $manager->flush();

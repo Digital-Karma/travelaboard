@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\FocusPays;
+use App\Form\CommentType;
 use App\Entity\FocusVille;
 use App\Form\FocusPaysType;
 use App\Repository\FocusPaysRepository;
@@ -99,11 +101,33 @@ class FocusPaysController extends AbstractController
      *
      * @Route("/focus_pays/{slug}", name="focus_show_pays")
      * 
+     * @param Request $request
+     * @param EntityManagerInterface $manager
      * @return Response
      */
-    public function show(FocusPays $focus){
+    public function show(FocusPays $focus, Request $request, EntityManagerInterface $manager){
+
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setFocusPays($focus)
+                    ->setAuthor($this->getUser());
+
+                    $manager->persist($comment);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        "Votre commentaire à bien été prix en compte"
+                    );
+        }
+
         return $this->render('focus_pays/show.html.twig', [
             'focus' => $focus,
+            'form'  => $form->createView()
         ]);
     }
 

@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
+use App\Form\CommentType;
 use App\Entity\FocusVille;
 use App\Form\FocusVilleType;
 use App\Repository\FocusVilleRepository;
@@ -99,11 +101,32 @@ class FocusVilleController extends AbstractController
      *
      * @Route("/focus_ville/{slug}", name="focus_show_ville")
      * 
+     * @param Request $request
+     * @param EntityManagerInterface $manager
      * @return Response
      */
-    public function show(FocusVille $focus){
+    public function show(FocusVille $focus, Request $request, EntityManagerInterface $manager){
+
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setFocusVille($focus)
+                    ->setAuthor($this->getUser());
+
+                    $manager->persist($comment);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        "Votre commentaire à bien été prix en compte"
+                    );
+        }
         return $this->render('focus_ville/show.html.twig', [
             'focus' => $focus,
+            'form'  => $form->createView()
         ]);
     }
 

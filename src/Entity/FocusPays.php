@@ -2,6 +2,8 @@
 
 namespace App\Entity;
 
+use App\Entity\User;
+use App\Entity\Comment;
 use Cocur\Slugify\Slugify;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\FocusPaysRepository;
@@ -35,12 +37,12 @@ class FocusPays
 
     /**
      * @ORM\Column(type="text")
+     * @Assert\Length(min=20, max=255, minMessage="L'introduction doit faire plus de 20 caractères !", maxMessage="L'introduction ne peut pas faire plus de 255 caractères !")
      */
     private $introduction;
 
     /**
      * @ORM\Column(type="string", length=255)
-     * @Assert\Length(min=20, max=255, minMessage="L'introduction doit faire plus de 20 caractères !", maxMessage="L'introduction ne peut pas faire plus de 255 caractères !")
      */
     private $slug;
 
@@ -65,6 +67,11 @@ class FocusPays
      */
     private $author;
 
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="focusPays", orphanRemoval=true)
+     */
+    private $comments;
+
       /**
      * Permet d'initialiser le slug
      *
@@ -80,10 +87,42 @@ class FocusPays
         }
     }
 
+    /**
+     * Permet de récuperer le commentaire d'un auteur par rapport à une annonce
+     *
+     * @param User $author
+     * @return Comment | null
+     */
+    public function getCommentFromAuthor(User $author){
+        foreach ($this->comments as $comment) {
+            if($comment->getAuthor() === $author) return $comment;
+        }
+
+        return null;
+    }
+
+    /**
+     * Permet d'obtenir la moyenne globale des note pour cette annonce
+     *
+     * @return float
+     */
+    public function getAvgRatings() {
+        //Calculer la somme des notations
+        // on commence par appeler le tableau comments qui est un array collection, on le transform en tableau avec to array et il est reduit avec array_reduce
+        $sum = array_reduce($this->comments->toArray(), function($total, $comment) {
+            return $total + $comment->getRating();
+        }, 0);
+
+        //Faire la division pour avoir la moyenne
+       if(count($this->comments) > 0) return $sum /count($this->comments);
+       
+       return 0;
+    }
 
     public function __construct()
     {
         $this->focusVilles = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -195,6 +234,37 @@ class FocusPays
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setFocusPays($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getFocusPays() === $this) {
+                $comment->setFocusPays(null);
+            }
+        }
 
         return $this;
     }

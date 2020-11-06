@@ -2,7 +2,9 @@
 
 namespace App\Controller;
 
+use App\Entity\Comment;
 use App\Entity\FocusLieu;
+use App\Form\CommentType;
 use App\Form\FocusLieuType;
 use App\Repository\FocusLieuRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -99,11 +101,32 @@ class FocusLieuController extends AbstractController
      *
      * @Route("/focus_lieu/{slug}", name="focus_show_lieu")
      * 
+     * @param Request $request
+     * @param EntityManagerInterface $manager
      * @return Response
      */
-    public function show(FocusLieu $focus){
+    public function show(FocusLieu $focus, Request $request, EntityManagerInterface $manager){
+
+        $comment = new Comment();
+
+        $form = $this->createForm(CommentType::class, $comment);
+        $form->handleRequest($request);
+
+        if ($form->isSubmitted() && $form->isValid()) {
+            $comment->setFocusLieu($focus)
+                    ->setAuthor($this->getUser());
+
+                    $manager->persist($comment);
+                    $manager->flush();
+
+                    $this->addFlash(
+                        'success',
+                        "Votre commentaire à bien été prix en compte"
+                    );
+        }
             return $this->render('focus_lieu/show.html.twig', [
             'focus' => $focus,
+            'form'  => $form->createView()
         ]);
     }
     

@@ -35,12 +35,12 @@ class FocusVille
 
     /**
      * @ORM\Column(type="text")
-     * @Assert\Length(min=20, max=255, minMessage="L'introduction doit faire plus de 20 caractères !", maxMessage="L'introduction ne peut pas faire plus de 255 caractères !")
+     * @Assert\Length(min=20, minMessage="L'introduction doit faire plus de 20 caractères !")
      */
     private $content;
 
     /**
-     * @ORM\Column(type="string", length=255, nullable=true)
+     * @ORM\Column(type="string", length=255)
      */
     private $slug;
 
@@ -70,6 +70,11 @@ class FocusVille
      * @ORM\JoinColumn(nullable=false)
      */
     private $author;
+
+    /**
+     * @ORM\OneToMany(targetEntity=Comment::class, mappedBy="focusVille", orphanRemoval=true)
+     */
+    private $comments;
     
       /**
      * Permet d'initialiser le slug
@@ -86,9 +91,37 @@ class FocusVille
         }
     }
 
+    /**
+     * Permet de récuperer le commentaire d'un auteur par rapport à une annonce
+     *
+     * @param User $author
+     * @return Comment | null
+     */
+    public function getCommentFromAuthor(User $author){
+        foreach ($this->comments as $comment) {
+            if($comment->getAuthor() === $author) return $comment;
+        }
+
+        return null;
+    }
+
+    public function getAvgRatings() {
+        //Calculer la somme des notations
+        // on commence par appeler le tableau comments qui est un array collection, on le transform en tableau avec to array et il est reduit avec array_reduce
+        $sum = array_reduce($this->comments->toArray(), function($total, $comment) {
+            return $total + $comment->getRating();
+        }, 0);
+
+        //Faire la division pour avoir la moyenne
+       if(count($this->comments) > 0) return $sum /count($this->comments);
+       
+       return 0;
+    }
+
     public function __construct()
     {
         $this->focusLieus = new ArrayCollection();
+        $this->comments = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -224,6 +257,37 @@ class FocusVille
     public function setAuthor(?User $author): self
     {
         $this->author = $author;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection|Comment[]
+     */
+    public function getComments(): Collection
+    {
+        return $this->comments;
+    }
+
+    public function addComment(Comment $comment): self
+    {
+        if (!$this->comments->contains($comment)) {
+            $this->comments[] = $comment;
+            $comment->setFocusVille($this);
+        }
+
+        return $this;
+    }
+
+    public function removeComment(Comment $comment): self
+    {
+        if ($this->comments->contains($comment)) {
+            $this->comments->removeElement($comment);
+            // set the owning side to null (unless already changed)
+            if ($comment->getFocusVille() === $this) {
+                $comment->setFocusVille(null);
+            }
+        }
 
         return $this;
     }
