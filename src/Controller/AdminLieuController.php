@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\FocusLieu;
 use App\Form\FocusLieuType;
+use App\Service\Pagination;
 use App\Repository\FocusLieuRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -13,12 +14,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdminLieuController extends AbstractController
 {
     /**
-     * @Route("/admin/lieu", name="admin_lieu_index")
+     * @Route("/admin/lieu/{page}", name="admin_lieu_index", requirements={"page": "\d+"})
      */
-    public function index(FocusLieuRepository $repo)
+    public function index(FocusLieuRepository $repo, $page = 1, Pagination $pagination)
     {
+        $pagination->setEntityClass(FocusLieu::class)
+                   ->setPage($page);
+
         return $this->render('admin/focus_lieu/index.html.twig', [
-            'focus_lieu' => $repo->findAll()
+            'pagination' => $pagination
         ]);
     }
     

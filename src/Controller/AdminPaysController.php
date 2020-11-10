@@ -4,6 +4,7 @@ namespace App\Controller;
 
 use App\Entity\FocusPays;
 use App\Form\FocusPaysType;
+use App\Service\Pagination;
 use App\Repository\FocusPaysRepository;
 use Doctrine\ORM\EntityManagerInterface;
 use Symfony\Component\HttpFoundation\Request;
@@ -12,13 +13,18 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 
 class AdminPaysController extends AbstractController
 {
+
+    //Le requirements permet de conditionner une route
     /**
-     * @Route("/admin/pays", name="admin_pays_index")
+     * @Route("/admin/pays/{page}", name="admin_pays_index", requirements={"page": "\d+"})
      */
-    public function index(FocusPaysRepository $repo)
+    public function index(FocusPaysRepository $repo, $page = 1, Pagination $pagination)
     {
+        $pagination->setEntityClass(FocusPays::class)
+                   ->setPage($page);
+
         return $this->render('admin/focus_pays/index.html.twig', [
-            'focus_pays' => $repo->findAll()
+            'pagination' => $pagination
         ]);
     }
 

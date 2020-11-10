@@ -20,7 +20,7 @@
 			</thead>
 
 			<tbody>
-				{% for focus in focus_lieu %}
+				{% for focus in pagination.data %}
 					<tr>
 						<td>{{focus.id}}</td>
 						<td>{{focus.title}}</td>
@@ -29,7 +29,7 @@
 							{{focus.author.fullName}}
 						</td>
 						<td class="text-center">
-							<span >{{focus.focusVille.title}}</span>
+							<span>{{focus.focusVille.title}}</span>
 						</td>
 						<td class="text-center">
 							<span class="badge badge-primary rounded">{{focus.avgRatings | number_format(1, ',', ' ')}}</span>
@@ -47,6 +47,6 @@
 				{% endfor %}
 			</tbody>
 		</table>
-
+		{{ pagination.display() }}
 	</div>
 {% endblock %}

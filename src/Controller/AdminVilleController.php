@@ -3,6 +3,7 @@
 namespace App\Controller;
 
 use App\Entity\FocusVille;
+use App\Service\Pagination;
 use App\Form\FocusVilleType;
 use App\Repository\FocusVilleRepository;
 use Doctrine\ORM\EntityManagerInterface;
@@ -13,12 +14,15 @@ use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
 class AdminVilleController extends AbstractController
 {
     /**
-     * @Route("/admin/ville", name="admin_ville_index")
+     * @Route("/admin/ville/{page}", name="admin_ville_index", requirements={"page": "\d+"})
      */
-    public function index(FocusVilleRepository $repo)
+    public function index(FocusVilleRepository $repo, $page = 1, Pagination $pagination)
     {
+        $pagination->setEntityClass(FocusVille::class)
+                   ->setPage($page);
+
         return $this->render('admin/focus_ville/index.html.twig', [
-            'focus_ville' => $repo->findAll()
+            'pagination' => $pagination
         ]);
     }
 

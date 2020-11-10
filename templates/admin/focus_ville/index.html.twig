@@ -20,7 +20,7 @@
 			</thead>
 
 			<tbody>
-				{% for focus in focus_ville %}
+				{% for focus in pagination.data %}
 					<tr>
 						<td>{{focus.id}}</td>
 						<td>{{focus.title}}</td>
@@ -47,6 +47,6 @@
 				{% endfor %}
 			</tbody>
 		</table>
-
+		{{ pagination.display() }}
 	</div>
 {% endblock %}
