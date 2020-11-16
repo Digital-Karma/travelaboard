@@ -19,6 +19,19 @@ class FocusLieuRepository extends ServiceEntityRepository
         parent::__construct($registry, FocusLieu::class);
     }
 
+    
+    public function findBestLieu($limit){
+        return $this->createQueryBuilder('l')
+                    ->select('l as lieu, AVG(c.rating) as avgRatings')
+                    ->join('l.comments', 'c')
+                    ->groupBy('l')
+                    ->orderBy('avgRatings', 'DESC')
+                    ->setMaxResults($limit)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+
     // /**
     //  * @return FocusLieu[] Returns an array of FocusLieu objects
     //  */

@@ -19,6 +19,18 @@ class FocusPaysRepository extends ServiceEntityRepository
         parent::__construct($registry, FocusPays::class);
     }
 
+    public function findBestPays($limit){
+        return $this->createQueryBuilder('p')
+                    ->select('p as pays, AVG(c.rating) as avgRatings')
+                    ->join('p.comments', 'c')
+                    ->groupBy('p')
+                    ->orderBy('avgRatings', 'DESC')
+                    ->setMaxResults($limit)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+
     // /**
     //  * @return FocusPays[] Returns an array of FocusPays objects
     //  */

@@ -1,10 +1,5 @@
-import React from 'react';
-import ReactDOM from 'react-dom';
-import App from "./components/App";
+var $ = require('jquery');
 
-ReactDOM.render(
-    (
-        <App/> 
-    ),
-    document.getElementById('app')
-)
+global.$ = global.jQuery = $;
+
+require('bootstrap');

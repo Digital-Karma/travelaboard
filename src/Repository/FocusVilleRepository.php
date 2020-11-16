@@ -19,6 +19,19 @@ class FocusVilleRepository extends ServiceEntityRepository
         parent::__construct($registry, FocusVille::class);
     }
 
+    
+    public function findBestVille($limit){
+        return $this->createQueryBuilder('v')
+                    ->select('v as ville, AVG(c.rating) as avgRatings')
+                    ->join('v.comments', 'c')
+                    ->groupBy('v')
+                    ->orderBy('avgRatings', 'DESC')
+                    ->setMaxResults($limit)
+                    ->getQuery()
+                    ->getResult();
+    }
+
+
     // /**
     //  * @return FocusVille[] Returns an array of FocusVille objects
     //  */
